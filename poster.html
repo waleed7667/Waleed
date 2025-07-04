@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PosterPerfect - Design Analysis Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5e72e4;
+            --primary-dark: #4e5fd1;
+            --secondary: #825ee4;
+            --accent: #ff7b54;
+            --success: #2dce89;
+            --warning: #fb6340;
+            --danger: #f5365c;
+            --dark: #1a1a2e;
+            --darker: #0f0f1a;
+            --light: #f8f9fa;
+            --lighter: #ffffff;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --box-shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), #ff9e7d);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            background: rgba(94, 114, 228, 0.1);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(94, 114, 228, 0.3);
+        }
+
+        .logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--lighter);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo span {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #a3a8c3;
+            max-width: 700px;
+            margin: 0 auto 25px;
+            font-weight: 300;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+            border-color: rgba(94, 114, 228, 0.3);
+        }
+
+        .card-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-area:hover, .upload-area.drag-over {
+            border-color: var(--primary);
+            background: rgba(94, 114, 228, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .upload-text h3 {
+            margin-bottom: 10px;
+            color: var(--lighter);
+            font-weight: 500;
+        }
+
+        .upload-text p {
+            color: #a3a8c3;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-accent);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--gradient-accent);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--lighter);
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .input-group .form-group {
+            flex: 1;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--lighter);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.3);
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: var(--lighter);
+        }
+
+        /* Preview Styles */
+        .preview-container {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #previewCanvas {
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: white;
+        }
+
+        .no-preview {
+            text-align: center;
+            color: #a3a8c3;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .no-preview i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: rgba(94, 114, 228, 0.3);
+        }
+
+        /* Issues List */
+        .issues-list {
+            list-style: none;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Custom scrollbar */
+        .issues-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .issues-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .issues-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .issue {
+            padding: 15px;
+            border-left: 4px solid var(--danger);
+            background: rgba(245, 54, 92, 0.08);
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+            transition: var(--transition);
+        }
+
+        .issue:hover {
+            transform: translateX(5px);
+            background: rgba(245, 54, 92, 0.15);
+        }
+
+        .issue.warning {
+            border-left-color: var(--warning);
+            background: rgba(251, 99, 64, 0.08);
+        }
+
+        .issue.warning:hover {
+            background: rgba(251, 99, 64, 0.15);
+        }
+
+        .issue.success {
+            border-left-color: var(--success);
+            background: rgba(45, 206, 137, 0.08);
+        }
+
+        .issue.success:hover {
+            background: rgba(45, 206, 137, 0.15);
+        }
+
+        .issue-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .issue-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .issue.warning .issue-icon {
+            background: var(--warning);
+        }
+
+        .issue.success .issue-icon {
+            background: var(--success);
+        }
+
+        .issue-title {
+            font-weight: 600;
+            color: var(--lighter);
+        }
+
+        .issue-content {
+            padding-left: 42px;
+            font-size: 0.95rem;
+            color: #c5cae9;
+        }
+
+        .issue-fix {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            font-weight: 500;
+            display: inline-block;
+            color: var(--lighter);
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-danger {
+            background: rgba(245, 54, 92, 0.2);
+            color: #ff9eb1;
+        }
+
+        .badge-warning {
+            background: rgba(251, 99, 64, 0.2);
+            color: #ffc1a3;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+        }
+
+        .summary-icon.danger {
+            background: rgba(245, 54, 92, 0.1);
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .summary-icon.warning {
+            background: rgba(251, 99, 64, 0.1);
+            color: var(--warning);
+            border: 2px solid var(--warning);
+        }
+
+        .summary-icon.success {
+            background: rgba(45, 206, 137, 0.1);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .score-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: var(--lighter);
+        }
+
+        .file-info {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .file-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+        }
+
+        .file-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-info-item span:first-child {
+            color: #a3a8c3;
+        }
+
+        .file-info-item span:last-child {
+            color: var(--lighter);
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #a3a8c3;
+            font-size: 0.9rem;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #a3a8c3;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #a3a8c3;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        /* Utility Classes */
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .text-accent {
+            color: var(--accent);
+        }
+
+        .text-success {
+            color: var(--success);
+        }
+
+        .text-warning {
+            color: var(--warning);
+        }
+
+        .text-danger {
+            color: var(--danger);
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .logo h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                padding: 8px 15px;
+            }
+            
+            .card-header {
+                padding: 15px;
+                font-size: 1rem;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .size-presets {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Content Analysis Report */
+        .content-analysis {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .content-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .content-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .content-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(94, 114, 228, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .content-text {
+            font-size: 0.95rem;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Highlight buttons */
+        .highlight-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Canvas wrapper */
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Analysis progress */
+        .analysis-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* New: Size presets */
+        .size-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .preset-btn {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preset-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            background: rgba(94, 114, 228, 0.1);
+        }
+        
+        .preset-btn.active {
+            background: rgba(94, 114, 228, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(94, 114, 228, 0.2);
+        }
+        
+        .preset-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--lighter);
+        }
+        
+        .preset-dimensions {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #a3a8c3;
+        }
+        
+        .preset-use {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-style: italic;
+            margin-top: 8px;
+        }
+        
+        .preset-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 1.5rem;
+        }
+        
+        .preset-group-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .preset-group-header i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+        
+        .preset-group-header h4 {
+            font-size: 1.1rem;
+            color: var(--lighter);
+        }
+        
+        .size-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .size-tab {
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .size-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Custom scrollbar for size presets */
+        .size-presets::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .size-presets::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+        
+        .size-presets::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        /* Upload status */
+        .upload-status {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        
+        .upload-status.success {
+            background: rgba(45, 206, 137, 0.1);
+            border: 1px solid rgba(45, 206, 137, 0.3);
+            color: var(--success);
+        }
+        
+        .upload-status.error {
+            background: rgba(245, 54, 92, 0.1);
+            border: 1px solid rgba(245, 54, 92, 0.3);
+            color: var(--danger);
+        }
+        
+        /* Content warning */
+        .content-warning {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(251, 99, 64, 0.1);
+            border: 1px solid rgba(251, 99, 64, 0.3);
+            border-radius: var(--border-radius);
+            color: var(--warning);
+            font-size: 0.95rem;
+            margin-top: 15px;
+        }
+        
+        /* Issue highlight */
+        .highlight-zone {
+            position: absolute;
+            border: 2px solid var(--danger);
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .highlight-text {
+            position: absolute;
+            background: rgba(245, 54, 92, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 11;
+            pointer-events: none;
+        }
+        
+        /* Score Meter */
+        .score-meter {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .score-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        /* Design Score Card */
+        .design-score {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        
+        .quality-rating {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .rating-excellent {
+            color: var(--success);
+        }
+        
+        .rating-good {
+            color: #a0d468;
+        }
+        
+        .rating-fair {
+            color: var(--warning);
+        }
+        
+        .rating-poor {
+            color: var(--danger);
+        }
+        
+        .quality-description {
+            text-align: center;
+            color: #a3a8c3;
+            margin-top: 10px;
+        }
+        
+        /* Issue Severity */
+        .severity {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .severity-critical {
+            background: rgba(245, 54, 92, 0.2);
+            color: #ff9eb1;
+        }
+        
+        .severity-high {
+            background: rgba(251, 99, 64, 0.2);
+            color: #ffc1a3;
+        }
+        
+        .severity-medium {
+            background: rgba(255, 184, 34, 0.2);
+            color: #ffd699;
+        }
+        
+        .severity-low {
+            background: rgba(45, 206, 137, 0.2);
+            color: #a0d468;
+        }
+        
+        /* Improvement Suggestions */
+        .suggestion-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--success);
+        }
+        
+        .suggestion-list {
+            padding-left: 20px;
+        }
+        
+        .suggestion-list li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-bg"></div>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-scroll"></i>
+                </div>
+                <h1>Poster<span>Perfect</span></h1>
+            </div>
+            <p class="tagline">AI-powered tool for perfect print designs with detailed analysis</p>
+        </header>
+
+        <div class="grid">
+            <!-- Left Column - Upload and Analysis -->
+            <div>
+                <!-- Upload Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload Your Design
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-area" id="dropZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-file-upload"></i>
+                            </div>
+                            <div class="upload-text">
+                                <h3 id="uploadTitle">Drag & Drop Files Here</h3>
+                                <p id="uploadSubtitle">Supported formats: PNG, JPG, JPEG (Max 20MB)</p>
+                            </div>
+                            <button class="btn btn-outline" id="browseBtn">
+                                <i class="fas fa-folder-open"></i> Browse Files
+                            </button>
+                            <input type="file" id="fileInput" accept=".png,.jpg,.jpeg" style="display: none;">
+                        </div>
+                        
+                        <div class="upload-status" id="uploadStatus">
+                            <i class="fas fa-check-circle"></i>
+                            <span>File uploaded successfully!</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Output Dimensions</label>
+                            
+                            <div class="size-tabs">
+                                <div class="size-tab active" data-type="paper">A-Series Paper</div>
+                                <div class="size-tab" data-type="screen">Conference Screens</div>
+                                <div class="size-tab" data-type="custom">Custom</div>
+                            </div>
+                            
+                            <!-- Paper Sizes -->
+                            <div class="size-group" id="paperGroup">
+                                <div class="preset-group-header">
+                                    <i class="fas fa-file-alt"></i>
+                                    <h4>A-Series Paper Sizes</h4>
+                                </div>
+                                <div class="size-presets">
+                                    <div class="preset-btn" data-preset="a0">
+                                        <i class="fas fa-scroll preset-icon"></i>
+                                        <div class="preset-name">A0</div>
+                                        <div class="preset-dimensions">841 × 1189 mm</div>
+                                        <div class="preset-dimensions">33.1 × 46.8 in</div>
+                                        <div class="preset-use">Large posters, architectural drawings</div>
+                                    </div>
+                                    <div class="preset-btn" data-preset="a1">
+                                        <i class="fas fa-scroll preset-icon"></i>
+                                        <div class="preset-name">A1</div>
+                                        <div class="preset-dimensions">594 × 841 mm</div>
+                                        <div class="preset-dimensions">23.4 × 33.1 in</div>
+                                        <div class="preset-use">Posters, flip charts</div>
+                                    </div>
+                                    <div class="preset-btn" data-preset="a2">
+                                        <i class="fas fa-scroll preset-icon"></i>
+                                        <div class="preset-name">A2</div>
+                                        <div class="preset-dimensions">420 × 594 mm</div>
+                                        <div class="preset-dimensions">16.5 × 23.4 in</div>
+                                        <div class="preset-use">Diagrams, medium posters</div>
+                                    </div>
+                                    <div class="preset-btn" data-preset="a3">
+                                        <i class="fas fa-scroll preset-icon"></i>
+                                        <div class="preset-name">A3</div>
+                                        <div class="preset-dimensions">297 × 420 mm</div>
+                                        <div class="preset-dimensions">11.7 × 16.5 in</div>
+                                        <div class="preset-use">Presentations, brochures, drawings</div>
+                                    </div>
+                                    <div class="preset-btn" data-preset="a4">
+                                        <i class="fas fa-scroll preset-icon"></i>
+                                        <div class="preset-name">A4</div>
+                                        <div class="preset-dimensions">210 × 297 mm</div>
+                                        <div class="preset-dimensions">8.3 × 11.7 in</div>
+                                        <div class="preset-use">Standard documents, letters, handouts</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Screen Sizes -->
+                            <div class="size-group" id="screenGroup" style="display:none;">
+                                <div class="preset-group-header">
+                                    <i class="fas fa-desktop"></i>
+                                    <h4>Conference Screen Sizes</h4>
+                                </div>
+                                <div class="size-presets">
+                                    <div class="preset-btn" data-preset="screen-100">
+                                        <i class="fas fa-tv preset-icon"></i>
+                                        <div class="preset-name">100" Screen</div>
+                                        <div class="preset-dimensions">84 × 48 in</div>
+                                        <div class="preset-dimensions">7 ft × 4 ft</div>
+                                        <div class="preset-use">Small rooms (up to 30 people)</div>
+                                    </div>
+                                    <div class="preset-btn" data-preset="screen-120">
+                                        <i class="fas fa-tv preset-icon"></i>
+                                        <div class="preset-name">120" Screen</div>
+                                        <div class="preset-dimensions">102 × 57.6 in</div>
+                                        <div class="preset-dimensions">8.5 ft × 4.8 ft</div>
+                                        <div class="preset-use">Small-medium (30–50 people)</div>
+                                    </div>
+                                    <div class="preset-btn" data-preset="screen-150">
+                                        <i class="fas fa-tv preset-icon"></i>
+                                        <div class="preset-name">150" Screen</div>
+                                        <div class="preset-dimensions">126 × 72 in</div>
+                                        <div class="preset-dimensions">10.5 ft × 6 ft</div>
+                                        <div class="preset-use">Medium (50–100 people)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Custom Size -->
+                            <div class="size-group" id="customGroup" style="display:none;">
+                                <div class="preset-group-header">
+                                    <i class="fas fa-ruler-combined"></i>
+                                    <h4>Custom Dimensions</h4>
+                                </div>
+                                <div class="input-group">
+                                    <div class="form-group">
+                                        <input type="number" id="width" placeholder="Width" min="1" value="48">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="number" id="height" placeholder="Height" min="1" value="36">
+                                    </div>
+                                    <div class="form-group">
+                                        <select id="unit">
+                                            <option value="inches">Inches</option>
+                                            <option value="cm">Centimeters</option>
+                                            <option value="pixels">Pixels</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Output Medium</label>
+                            <select id="medium">
+                                <option value="print">Print (300 PPI recommended)</option>
+                                <option value="screen">Screen Display (72 PPI minimum)</option>
+                                <option value="large-format">Large Format Printing (150 PPI)</option>
+                                <option value="photo">Photo Quality (600 PPI)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Viewing Distance (for text sizing)</label>
+                            <select id="distance">
+                                <option value="close">Close (1-3 ft / 30-90 cm)</option>
+                                <option value="medium" selected>Medium (3-6 ft / 1-2 m)</option>
+                                <option value="far">Far (6-15 ft / 2-5 m)</option>
+                                <option value="very-far">Very Far (15+ ft / 5+ m)</option>
+                            </select>
+                        </div>
+
+                        <button class="btn" id="analyzeBtn">
+                            <i class="fas fa-search"></i> Analyze Design Clarity
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Design Score Card -->
+                <div class="card" id="scoreCard" style="display: none;">
+                    <div class="card-header">
+                        <i class="fas fa-star"></i>
+                        Design Quality Score
+                    </div>
+                    <div class="card-body">
+                        <div class="design-score">
+                            <div class="score" id="designScore">86</div>
+                            <div class="quality-rating rating-good" id="qualityRating">Good</div>
+                            <div class="quality-description" id="qualityDescription">
+                                Your design is well-executed but has some areas that need improvement for optimal print quality.
+                            </div>
+                            
+                            <div class="score-meter">
+                                <div class="score-fill" id="scoreFill" style="width: 86%; background: linear-gradient(90deg, var(--success), #a0d468);"></div>
+                            </div>
+                            
+                            <div class="score-text">
+                                <div>Poor &nbsp; Fair &nbsp; Good &nbsp; Excellent</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Preview and Info -->
+            <div>
+                <!-- Preview Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-search"></i>
+                        Design Preview & Issues
+                    </div>
+                    <div class="card-body">
+                        <div class="preview-container">
+                            <div class="no-preview" id="emptyPreview">
+                                <i class="fas fa-file-image"></i>
+                                <h3>Upload a file to preview</h3>
+                                <p>Your design will appear here with highlighted issues</p>
+                            </div>
+                            <canvas id="previewCanvas" width="800" height="500" style="display: none;"></canvas>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>Issue Highlighting</label>
+                            <div class="input-group">
+                                <button class="btn btn-outline active highlight-btn" data-type="images">
+                                    <i class="fas fa-image"></i> Images
+                                </button>
+                                <button class="btn btn-outline highlight-btn" data-type="text">
+                                    <i class="fas fa-font"></i> Text
+                                </button>
+                                <button class="btn btn-outline highlight-btn" data-type="layout">
+                                    <i class="fas fa-border-all"></i> Layout
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Content Warning -->
+                        <div class="content-warning" id="textWarning" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>No text detected in this image. Text suggestions are disabled.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issues Card -->
+                <div class="card" id="issuesCard" style="display: none;">
+                    <div class="card-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Design Issues & Improvements
+                    </div>
+                    <div class="card-body">
+                        <div class="issue">
+                            <div class="issue-header">
+                                <div class="issue-icon" style="background: var(--danger);">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <div class="issue-title">Low Resolution Images</div>
+                            </div>
+                            <div class="issue-content">
+                                <div class="severity severity-critical">Critical</div>
+                                <p>Some images have resolution below 150 PPI at target size.</p>
+                                <div class="issue-fix">
+                                    <i class="fas fa-lightbulb text-warning"></i> Replace with higher resolution images or vector graphics
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="issue warning">
+                            <div class="issue-header">
+                                <div class="issue-icon" style="background: var(--warning);">
+                                    <i class="fas fa-font"></i>
+                                </div>
+                                <div class="issue-title">Small Text Size</div>
+                            </div>
+                            <div class="issue-content">
+                                <div class="severity severity-high">High</div>
+                                <p>Body text below 12pt may be hard to read at medium distance.</p>
+                                <div class="issue-fix">
+                                    <i class="fas fa-lightbulb text-warning"></i> Increase font size to at least 14pt for body text
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="issue">
+                            <div class="issue-header">
+                                <div class="issue-icon" style="background: var(--danger);">
+                                    <i class="fas fa-compress-alt"></i>
+                                </div>
+                                <div class="issue-title">Compression Artifacts</div>
+                            </div>
+                            <div class="issue-content">
+                                <div class="severity severity-medium">Medium</div>
+                                <p>Some areas show visible compression artifacts from JPEG format.</p>
+                                <div class="issue-fix">
+                                    <i class="fas fa-lightbulb text-warning"></i> Use lossless formats like PNG or increase JPEG quality
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="issue success">
+                            <div class="issue-header">
+                                <div class="issue-icon" style="background: var(--success);">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <div class="issue-title">Color Profile</div>
+                            </div>
+                            <div class="issue-content">
+                                <div class="severity severity-low">Low</div>
+                                <p>Design uses RGB instead of CMYK color profile.</p>
+                                <div class="issue-fix">
+                                    <i class="fas fa-lightbulb text-warning"></i> Convert to CMYK for better print color accuracy
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Improvement Suggestions -->
+                        <div class="suggestion-card">
+                            <div class="suggestion-title">
+                                <i class="fas fa-lightbulb text-success"></i> Design Improvement Tips
+                            </div>
+                            <ul class="suggestion-list">
+                                <li>Increase margin sizes by 15% for better visual balance</li>
+                                <li>Use higher contrast between text and background colors</li>
+                                <li>Check alignment of all elements using grid guidelines</li>
+                                <li>Verify CMYK color values match your design intent</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2023 PosterPerfect - AI Design Clarity Analyzer | Created with <i class="fas fa-heart text-danger"></i> for designers</p>
+            <p>This tool uses AI algorithms to assess design clarity but does not guarantee print or display quality.</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const emptyPreview = document.getElementById('emptyPreview');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const highlightBtns = document.querySelectorAll('.highlight-btn');
+        const textWarning = document.getElementById('textWarning');
+        const presetBtns = document.querySelectorAll('.preset-btn');
+        const widthInput = document.getElementById('width');
+        const heightInput = document.getElementById('height');
+        const unitSelect = document.getElementById('unit');
+        const sizeTabs = document.querySelectorAll('.size-tab');
+        const paperGroup = document.getElementById('paperGroup');
+        const screenGroup = document.getElementById('screenGroup');
+        const customGroup = document.getElementById('customGroup');
+        const scoreCard = document.getElementById('scoreCard');
+        const issuesCard = document.getElementById('issuesCard');
+        const designScore = document.getElementById('designScore');
+        const qualityRating = document.getElementById('qualityRating');
+        const qualityDescription = document.getElementById('qualityDescription');
+        const scoreFill = document.getElementById('scoreFill');
+        
+        let uploadedImage = null;
+        let ctx = previewCanvas.getContext('2d');
+        let lastRenderParams = null;
+        let imageHasText = false;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Browse button click
+            browseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fileInput.click();
+            });
+
+            // File input change handler
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop handlers
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            // Handle dropped files
+            dropZone.addEventListener('drop', handleDrop, false);
+            
+            // Handle click on dropzone
+            dropZone.addEventListener('click', (e) => {
+                if (e.target !== browseBtn) {
+                    fileInput.click();
+                }
+            });
+
+            // Analyze button handler
+            analyzeBtn.addEventListener('click', () => {
+                if (!uploadedImage) {
+                    showUploadStatus("Please upload an image first", true);
+                    return;
+                }
+                
+                analyzeBtn.innerHTML = '<span class="spinner"></span> Analyzing...';
+                
+                // Simulate analysis process
+                setTimeout(() => {
+                    analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Design Clarity';
+                    
+                    // Reset text detection
+                    imageHasText = false;
+                    
+                    // Check for text in image - this would be done via OCR in a real application
+                    // For demo, we'll randomly decide if image has text
+                    const hasText = Math.random() > 0.3; // 70% chance of having text
+                    
+                    if (hasText) {
+                        imageHasText = true;
+                        showUploadStatus("Analysis complete! Text detected.", false);
+                    } else {
+                        imageHasText = false;
+                        showUploadStatus("Analysis complete! No text detected.", false);
+                    }
+                    
+                    // Show score and issues
+                    scoreCard.style.display = 'block';
+                    issuesCard.style.display = 'block';
+                    
+                    // Set design score (simulated)
+                    const score = Math.floor(Math.random() * 30) + 70; // Between 70-100
+                    designScore.textContent = score;
+                    scoreFill.style.width = `${score}%`;
+                    
+                    // Set rating based on score
+                    if (score >= 90) {
+                        qualityRating.textContent = "Excellent";
+                        qualityRating.className = "quality-rating rating-excellent";
+                        qualityDescription.textContent = "Your design is print-ready with excellent quality and no critical issues.";
+                        scoreFill.style.background = "linear-gradient(90deg, var(--success), #2dce89)";
+                    } else if (score >= 80) {
+                        qualityRating.textContent = "Good";
+                        qualityRating.className = "quality-rating rating-good";
+                        qualityDescription.textContent = "Your design is well-executed but has some areas that need improvement for optimal print quality.";
+                        scoreFill.style.background = "linear-gradient(90deg, #a0d468, var(--success))";
+                    } else if (score >= 70) {
+                        qualityRating.textContent = "Fair";
+                        qualityRating.className = "quality-rating rating-fair";
+                        qualityDescription.textContent = "Your design has several issues that need attention before printing.";
+                        scoreFill.style.background = "linear-gradient(90deg, var(--warning), #fb6340)";
+                    } else {
+                        qualityRating.textContent = "Poor";
+                        qualityRating.className = "quality-rating rating-poor";
+                        qualityDescription.textContent = "Your design has critical issues that need to be fixed before printing.";
+                        scoreFill.style.background = "linear-gradient(90deg, var(--danger), #f5365c)";
+                    }
+                    
+                    // Highlight issues based on analysis
+                    highlightIssues();
+                    
+                }, 2000);
+            });
+
+            // Highlight buttons functionality
+            highlightBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    highlightBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const type = this.getAttribute('data-type');
+                    
+                    if (type === 'text' && !imageHasText) {
+                        textWarning.style.display = 'flex';
+                    } else {
+                        textWarning.style.display = 'none';
+                    }
+                    
+                    // Update highlighting
+                    highlightIssues();
+                });
+            });
+            
+            // Size preset buttons
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    presetBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Set dimensions based on preset
+                    const preset = this.getAttribute('data-preset');
+                    switch(preset) {
+                        case 'a0':
+                            widthInput.value = 33.1;
+                            heightInput.value = 46.8;
+                            unitSelect.value = 'inches';
+                            break;
+                        case 'a1':
+                            widthInput.value = 23.4;
+                            heightInput.value = 33.1;
+                            unitSelect.value = 'inches';
+                            break;
+                        case 'a2':
+                            widthInput.value = 16.5;
+                            heightInput.value = 23.4;
+                            unitSelect.value = 'inches';
+                            break;
+                        case 'a3':
+                            widthInput.value = 11.7;
+                            heightInput.value = 16.5;
+                            unitSelect.value = 'inches';
+                            break;
+                        case 'a4':
+                            widthInput.value = 8.3;
+                            heightInput.value = 11.7;
+                            unitSelect.value = 'inches';
+                            break;
+                        case 'screen-100':
+                            widthInput.value = 84; // 7 ft * 12
+                            heightInput.value = 48; // 4 ft * 12
+                            unitSelect.value = 'inches';
+                            break;
+                        case 'screen-120':
+                            widthInput.value = 102; // 8.5 ft * 12
+                            heightInput.value = 57.6; // 4.8 ft * 12
+                            unitSelect.value = 'inches';
+                            break;
+                        case 'screen-150':
+                            widthInput.value = 126; // 10.5 ft * 12
+                            heightInput.value = 72; // 6 ft * 12
+                            unitSelect.value = 'inches';
+                            break;
+                    }
+                });
+            });
+            
+            // Size tabs switching
+            sizeTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    sizeTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all groups
+                    paperGroup.style.display = 'none';
+                    screenGroup.style.display = 'none';
+                    customGroup.style.display = 'none';
+                    
+                    // Show the corresponding group
+                    const groupType = this.getAttribute('data-type');
+                    if (groupType === 'paper') {
+                        paperGroup.style.display = 'block';
+                    } else if (groupType === 'screen') {
+                        screenGroup.style.display = 'block';
+                    } else if (groupType === 'custom') {
+                        customGroup.style.display = 'block';
+                    }
+                });
+            });
+        }
+
+        // Highlight issues on canvas
+        function highlightIssues() {
+            if (!uploadedImage || !lastRenderParams) return;
+            
+            // Clear previous highlights
+            clearHighlights();
+            
+            const {x, y, renderWidth, renderHeight} = lastRenderParams;
+            const canvasWidth = previewCanvas.width;
+            const canvasHeight = previewCanvas.height;
+            
+            // Get active highlight type
+            const activeBtn = document.querySelector('.highlight-btn.active');
+            if (!activeBtn) return;
+            
+            const type = activeBtn.getAttribute('data-type');
+            
+            // Simulate finding issues - in a real app this would come from AI analysis
+            const issues = [];
+            
+            if (type === 'images') {
+                // Simulate image quality issues
+                issues.push({
+                    type: 'image',
+                    message: 'Low resolution area',
+                    x: x + renderWidth * 0.2,
+                    y: y + renderHeight * 0.3,
+                    width: renderWidth * 0.15,
+                    height: renderHeight * 0.1
+                });
+                
+                issues.push({
+                    type: 'image',
+                    message: 'Possible compression artifacts',
+                    x: x + renderWidth * 0.6,
+                    y: y + renderHeight * 0.7,
+                    width: renderWidth * 0.2,
+                    height: renderHeight * 0.15
+                });
+            }
+            else if (type === 'text' && imageHasText) {
+                // Simulate text issues only if text was detected
+                issues.push({
+                    type: 'text',
+                    message: 'Text too small for viewing distance',
+                    x: x + renderWidth * 0.1,
+                    y: y + renderHeight * 0.2,
+                    width: renderWidth * 0.3,
+                    height: renderHeight * 0.08
+                });
+                
+                issues.push({
+                    type: 'text',
+                    message: 'Low contrast text',
+                    x: x + renderWidth * 0.5,
+                    y: y + renderHeight * 0.6,
+                    width: renderWidth * 0.25,
+                    height: renderHeight * 0.07
+                });
+            }
+            else if (type === 'layout') {
+                // Simulate layout issues
+                issues.push({
+                    type: 'layout',
+                    message: 'Margin too small',
+                    x: x,
+                    y: y,
+                    width: renderWidth,
+                    height: renderHeight * 0.05
+                });
+                
+                issues.push({
+                    type: 'layout',
+                    message: 'Element alignment issue',
+                    x: x + renderWidth * 0.4,
+                    y: y + renderHeight * 0.5,
+                    width: renderWidth * 0.3,
+                    height: renderHeight * 0.2
+                });
+            }
+            
+            // Draw highlights
+            issues.forEach(issue => {
+                const highlight = document.createElement('div');
+                highlight.className = 'highlight-zone';
+                highlight.style.left = `${issue.x}px`;
+                highlight.style.top = `${issue.y}px`;
+                highlight.style.width = `${issue.width}px`;
+                highlight.style.height = `${issue.height}px`;
+                highlight.style.borderColor = issue.type === 'image' ? 
+                    'var(--danger)' : 
+                    issue.type === 'text' ? 
+                    'var(--warning)' : 
+                    'var(--accent)';
+                
+                const label = document.createElement('div');
+                label.className = 'highlight-text';
+                label.textContent = issue.message;
+                label.style.left = `${issue.x}px`;
+                label.style.top = `${issue.y - 30}px`;
+                label.style.backgroundColor = issue.type === 'image' ? 
+                    'rgba(245, 54, 92, 0.7)' : 
+                    issue.type === 'text' ? 
+                    'rgba(251, 99, 64, 0.7)' : 
+                    'rgba(255, 123, 84, 0.7)';
+                
+                document.querySelector('.preview-container').appendChild(highlight);
+                document.querySelector('.preview-container').appendChild(label);
+            });
+        }
+        
+        function clearHighlights() {
+            const highlights = document.querySelectorAll('.highlight-zone, .highlight-text');
+            highlights.forEach(el => el.remove());
+        }
+
+        // Event handlers
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight() {
+            dropZone.classList.add('drag-over');
+        }
+
+        function unhighlight() {
+            dropZone.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            handleFiles(files);
+        }
+
+        // Process uploaded files
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                
+                // Check file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                if (!validTypes.includes(file.type)) {
+                    showUploadStatus("Invalid file type. Please upload a PNG, JPG, or JPEG.", true);
+                    return;
+                }
+
+                // Check file size (max 20MB)
+                if (file.size > 20 * 1024 * 1024) {
+                    showUploadStatus("File is too large. Max size is 20MB.", true);
+                    return;
+                }
+                
+                // Show upload status
+                showUploadStatus("Processing file...", false);
+                
+                // Hide score card until analysis is complete
+                scoreCard.style.display = 'none';
+                issuesCard.style.display = 'none';
+                
+                // Create a FileReader to read the image
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Create an image object
+                    uploadedImage = new Image();
+                    
+                    uploadedImage.onerror = function() {
+                        showUploadStatus("Error loading image. Please try another file.", true);
+                    };
+                    
+                    uploadedImage.onload = function() {
+                        // Display the image on canvas
+                        displayImageOnCanvas(uploadedImage);
+                        
+                        // Reset text detection
+                        imageHasText = false;
+                        textWarning.style.display = 'none';
+                        
+                        // Clear any previous highlights
+                        clearHighlights();
+                        
+                        // Show success status
+                        showUploadStatus("File uploaded successfully! Click 'Analyze' to check for issues", false);
+                    };
+                    uploadedImage.src = e.target.result;
+                };
+                
+                reader.onerror = function() {
+                    showUploadStatus("Error reading file. Please try again.", true);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Core functions
+        function displayImageOnCanvas(img) {
+            // Hide empty preview message
+            emptyPreview.style.display = 'none';
+            
+            // Show canvas
+            previewCanvas.style.display = 'block';
+            
+            // Get container dimensions
+            const container = previewCanvas.parentElement;
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            
+            // Set canvas dimensions
+            previewCanvas.width = containerWidth;
+            previewCanvas.height = containerHeight;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, containerWidth, containerHeight);
+            
+            // Calculate aspect ratios
+            const imgAspect = img.width / img.height;
+            const containerAspect = containerWidth / containerHeight;
+            
+            let renderWidth, renderHeight, x, y;
+            
+            if (imgAspect > containerAspect) {
+                // Image is wider than container
+                renderWidth = containerWidth;
+                renderHeight = containerWidth / imgAspect;
+                x = 0;
+                y = (containerHeight - renderHeight) / 2;
+            } else {
+                // Image is taller than container
+                renderHeight = containerHeight;
+                renderWidth = containerHeight * imgAspect;
+                x = (containerWidth - renderWidth) / 2;
+                y = 0;
+            }
+            
+            // Draw the image
+            ctx.drawImage(img, x, y, renderWidth, renderHeight);
+            
+            // Store rendering parameters for highlighting
+            lastRenderParams = {x, y, renderWidth, renderHeight};
+        }
+
+        function showUploadStatus(message, isError) {
+            uploadStatus.innerHTML = isError 
+                ? `<i class="fas fa-exclamation-circle"></i> ${message}`
+                : `<i class="fas fa-check-circle"></i> ${message}`;
+                
+            uploadStatus.className = isError 
+                ? 'upload-status error' 
+                : 'upload-status success';
+                
+            uploadStatus.style.display = 'flex';
+            
+            // Auto-hide success messages after 5 seconds
+            if (!isError) {
+                setTimeout(() => {
+                    uploadStatus.style.display = 'none';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
